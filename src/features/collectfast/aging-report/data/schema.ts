@@ -8,3 +8,6 @@ export type AgingReportRow = {
   outstanding: number
 }
 
+// Backwards compatibility for any legacy imports
+export type AgingReportItem = AgingReportRow
+

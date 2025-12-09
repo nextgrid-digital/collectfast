@@ -12,7 +12,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type Communication } from '../data/schema'
-import { Badge } from '@/components/ui/badge'
 
 type CommunicationDetailProps = {
   communication: Communication | null
@@ -23,7 +22,6 @@ const getRelatedInvoices = (invoiceId: string | null) => {
   if (!invoiceId) return []
   
   // Generate consistent invoices based on the invoice ID
-  const baseAmount = invoiceId.charCodeAt(2) % 1000 + 100
   const age1 = 56
   const age2 = 78
   const age3 = 119

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useSearch, useNavigate } from '@tanstack/react-router'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -12,8 +11,6 @@ import { CommunicationsPrimaryButtons } from './components/communications-primar
 import { communications } from './data/communications'
 
 export function Communication() {
-  const search = (useSearch({ from: '/app/communication', strict: false }) as Record<string, unknown>) || {}
-  const navigate = useNavigate()
   const [selectedCommunicationId, setSelectedCommunicationId] = useState<string | null>(
     communications[0]?.id || null
   )
