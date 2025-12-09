@@ -1,4 +1,4 @@
-import { ChevronsUpDown } from 'lucide-react'
+import { ChevronsUpDown, Plus } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -148,6 +148,13 @@ export function CompanySwitcherSidebar() {
                 ))}
               </>
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className='gap-2 p-2'>
+              <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
+                <Plus className='size-4' />
+              </div>
+              <div className='text-muted-foreground font-medium'>Add company</div>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
