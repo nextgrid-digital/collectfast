@@ -11,7 +11,7 @@ import { type SidebarData } from '../types'
 
 const CollectfastLogo: React.FC = () =>
   React.createElement('img', {
-    src: '/images/Collectfast-Favicon.png',
+    src: '/images/Collectfast-Favicon.webp',
     alt: 'Collectfast logo',
     className: 'h-8 w-8 rounded-lg object-contain',
   })
