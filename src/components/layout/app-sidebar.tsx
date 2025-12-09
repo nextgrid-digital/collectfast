@@ -52,7 +52,13 @@ export function AppSidebar() {
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>
         <CompanySwitcherSidebar />
-        
+      </SidebarHeader>
+      <SidebarContent>
+        {navGroups.map((props) => (
+          <NavGroup key={props.title} {...props} />
+        ))}
+      </SidebarContent>
+      <SidebarFooter>
         {/* Role Badge */}
         {currentCompany && (
           <div className='px-2 pb-2'>
@@ -69,13 +75,6 @@ export function AppSidebar() {
             </Badge>
           </div>
         )}
-      </SidebarHeader>
-      <SidebarContent>
-        {navGroups.map((props) => (
-          <NavGroup key={props.title} {...props} />
-        ))}
-      </SidebarContent>
-      <SidebarFooter>
         <NavUser user={sidebarData.user} />
       </SidebarFooter>
       <SidebarRail />
