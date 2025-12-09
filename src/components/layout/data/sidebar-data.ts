@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   LayoutDashboard,
   Users,
@@ -5,9 +6,15 @@ import {
   Receipt,
   FileText,
   Settings,
-  Command,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
+
+const CollectfastLogo: React.FC = () =>
+  React.createElement('img', {
+    src: '/images/Collectfast-Favicon.png',
+    alt: 'Collectfast logo',
+    className: 'h-8 w-8 rounded-lg object-contain',
+  })
 
 export const sidebarData: SidebarData = {
   user: {
@@ -18,7 +25,7 @@ export const sidebarData: SidebarData = {
   teams: [
     {
       name: 'Collectfast',
-      logo: Command,
+      logo: CollectfastLogo,
       plan: 'Accounts Receivables',
     },
   ],
