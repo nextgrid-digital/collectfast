@@ -12,8 +12,7 @@ import {
 import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
-import { TeamSwitcher } from './team-switcher'
-import { CompanySwitcher } from '@/components/company-switcher'
+import { CompanySwitcherSidebar } from '@/components/company-switcher-sidebar'
 import { useCompany } from '@/context/company-context'
 import { Badge } from '@/components/ui/badge'
 
@@ -52,12 +51,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>
-        <TeamSwitcher teams={sidebarData.teams} />
-        
-        {/* Company Switcher */}
-        <div className='px-2 py-2'>
-          <CompanySwitcher />
-        </div>
+        <CompanySwitcherSidebar />
         
         {/* Role Badge */}
         {currentCompany && (
@@ -75,10 +69,6 @@ export function AppSidebar() {
             </Badge>
           </div>
         )}
-
-        {/* Replace <TeamSwitch /> with the following <AppTitle />
-         /* if you want to use the normal app title instead of TeamSwitch dropdown */}
-        {/* <AppTitle /> */}
       </SidebarHeader>
       <SidebarContent>
         {navGroups.map((props) => (
