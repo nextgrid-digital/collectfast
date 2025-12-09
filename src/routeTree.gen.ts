@@ -20,6 +20,7 @@ import { Route as AppInvoicesRouteImport } from './routes/app/invoices'
 import { Route as AppCustomersRouteImport } from './routes/app/customers'
 import { Route as AppCommunicationRouteImport } from './routes/app/communication'
 import { Route as AppAgingReportRouteImport } from './routes/app/aging-report'
+import { Route as AppAccountantDashboardRouteImport } from './routes/app/accountant-dashboard'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors404RouteImport } from './routes/(errors)/404'
@@ -100,6 +101,11 @@ const AppCommunicationRoute = AppCommunicationRouteImport.update({
 const AppAgingReportRoute = AppAgingReportRouteImport.update({
   id: '/aging-report',
   path: '/aging-report',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppAccountantDashboardRoute = AppAccountantDashboardRouteImport.update({
+  id: '/accountant-dashboard',
+  path: '/accountant-dashboard',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const errors503Route = errors503RouteImport.update({
@@ -260,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
   '/app/communication': typeof AppCommunicationRoute
   '/app/customers': typeof AppCustomersRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
+  '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
   '/app/communication': typeof AppCommunicationRoute
   '/app/customers': typeof AppCustomersRoute
@@ -336,6 +344,7 @@ export interface FileRoutesById {
   '/(errors)/404': typeof errors404Route
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
+  '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
   '/app/communication': typeof AppCommunicationRoute
   '/app/customers': typeof AppCustomersRoute
@@ -375,6 +384,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/app/accountant-dashboard'
     | '/app/aging-report'
     | '/app/communication'
     | '/app/customers'
@@ -410,6 +420,7 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
+    | '/app/accountant-dashboard'
     | '/app/aging-report'
     | '/app/communication'
     | '/app/customers'
@@ -450,6 +461,7 @@ export interface FileRouteTypes {
     | '/(errors)/404'
     | '/(errors)/500'
     | '/(errors)/503'
+    | '/app/accountant-dashboard'
     | '/app/aging-report'
     | '/app/communication'
     | '/app/customers'
@@ -567,6 +579,13 @@ declare module '@tanstack/react-router' {
       path: '/aging-report'
       fullPath: '/app/aging-report'
       preLoaderRoute: typeof AppAgingReportRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/accountant-dashboard': {
+      id: '/app/accountant-dashboard'
+      path: '/accountant-dashboard'
+      fullPath: '/app/accountant-dashboard'
+      preLoaderRoute: typeof AppAccountantDashboardRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/(errors)/503': {
@@ -808,6 +827,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AppRouteRouteChildren {
+  AppAccountantDashboardRoute: typeof AppAccountantDashboardRoute
   AppAgingReportRoute: typeof AppAgingReportRoute
   AppCommunicationRoute: typeof AppCommunicationRoute
   AppCustomersRoute: typeof AppCustomersRoute
@@ -818,6 +838,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAccountantDashboardRoute: AppAccountantDashboardRoute,
   AppAgingReportRoute: AppAgingReportRoute,
   AppCommunicationRoute: AppCommunicationRoute,
   AppCustomersRoute: AppCustomersRoute,

@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { Building2 } from 'lucide-react'
 import { useLayout } from '@/context/layout-provider'
 import {
   Sidebar,
@@ -18,6 +20,34 @@ import { Badge } from '@/components/ui/badge'
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { currentCompany, isAccountant } = useCompany()
+  
+  // Filter navigation items based on role
+  const navGroups = useMemo(() => {
+    const baseGroups = [...sidebarData.navGroups]
+    
+    // For accountants, add Accountant Dashboard as first item
+    if (isAccountant) {
+      const mainGroup = baseGroups[0]
+      if (mainGroup) {
+        return [
+          {
+            ...mainGroup,
+            items: [
+              {
+                title: 'Accountant Dashboard',
+                url: '/app/accountant-dashboard',
+                icon: Building2,
+              },
+              ...mainGroup.items,
+            ],
+          },
+          ...baseGroups.slice(1),
+        ]
+      }
+    }
+    
+    return baseGroups
+  }, [isAccountant])
   
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
@@ -51,7 +81,7 @@ export function AppSidebar() {
         {/* <AppTitle /> */}
       </SidebarHeader>
       <SidebarContent>
-        {sidebarData.navGroups.map((props) => (
+        {navGroups.map((props) => (
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
