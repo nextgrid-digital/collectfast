@@ -20,17 +20,13 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Use Geist Mono for numeric-heavy content */
-  td,
+  /* Use Geist Mono only when explicitly marked as numeric */
   .number,
   .numeric,
   .amount,
   .stat,
   .metric,
-  [data-number] {
-    font-family: 'Geist Mono', 'Geist', 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  }
-
+  [data-number],
   .font-mono {
     font-family: 'Geist Mono', 'Geist', 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   }
