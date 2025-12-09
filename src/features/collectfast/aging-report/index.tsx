@@ -9,10 +9,17 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AgingReportTable } from './components/aging-report-table'
-import { agingReportData } from './data/aging-data'
+import { useCompany } from '@/context/company-context'
+import { getAgingReportByCompany } from '@/data/mock/data-service'
 
 export function AgingReport() {
+  const { currentCompany, isLoading } = useCompany()
   const [query, setQuery] = useState('')
+
+  const agingReportData = useMemo(() => {
+    if (!currentCompany) return []
+    return getAgingReportByCompany(currentCompany.id)
+  }, [currentCompany])
 
   const filteredData = useMemo(() => {
     if (!query) return agingReportData
@@ -20,7 +27,27 @@ export function AgingReport() {
     return agingReportData.filter((row) =>
       row.customer.toLowerCase().includes(q)
     )
-  }, [query])
+  }, [query, agingReportData])
+
+  if (isLoading || !currentCompany) {
+    return (
+      <>
+        <Header fixed>
+          <Search />
+          <div className='ms-auto flex items-center space-x-4'>
+            <ThemeSwitch />
+            <ConfigDrawer />
+            <ProfileDropdown />
+          </div>
+        </Header>
+        <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
+          <div className='text-center py-12'>
+            <p className='text-muted-foreground'>Loading company data...</p>
+          </div>
+        </Main>
+      </>
+    )
+  }
 
   return (
     <>

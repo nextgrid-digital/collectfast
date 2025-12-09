@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -8,17 +8,51 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { CommunicationList } from './components/communication-list'
 import { CommunicationDetail } from './components/communication-detail'
 import { CommunicationsPrimaryButtons } from './components/communications-primary-buttons'
-import { communications } from './data/communications'
+import { useCompany } from '@/context/company-context'
+import { getCommunicationsByCompany } from '@/data/mock/data-service'
 
 export function Communication() {
-  const [selectedCommunicationId, setSelectedCommunicationId] = useState<string | null>(
-    communications[0]?.id || null
-  )
+  const { currentCompany, isLoading } = useCompany()
+  const [selectedCommunicationId, setSelectedCommunicationId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+
+  const communications = useMemo(() => {
+    if (!currentCompany) return []
+    return getCommunicationsByCompany(currentCompany.id)
+  }, [currentCompany])
+
+  // Reset selected communication when company changes
+  useEffect(() => {
+    if (communications.length > 0) {
+      setSelectedCommunicationId(communications[0].id)
+    } else {
+      setSelectedCommunicationId(null)
+    }
+  }, [communications])
 
   const selectedCommunication = communications.find(
     (comm) => comm.id === selectedCommunicationId
   ) || null
+
+  if (isLoading || !currentCompany) {
+    return (
+      <>
+        <Header fixed>
+          <Search />
+          <div className='ms-auto flex items-center space-x-4'>
+            <ThemeSwitch />
+            <ConfigDrawer />
+            <ProfileDropdown />
+          </div>
+        </Header>
+        <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
+          <div className='text-center py-12'>
+            <p className='text-muted-foreground'>Loading company data...</p>
+          </div>
+        </Main>
+      </>
+    )
+  }
 
   return (
     <>
