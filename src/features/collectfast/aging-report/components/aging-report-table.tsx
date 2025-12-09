@@ -1,183 +1,91 @@
-import { useEffect, useState } from 'react'
-import {
-  type SortingState,
-  type VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
-import { cn } from '@/lib/utils'
-import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { type AgingReportItem } from '../data/schema'
-import { agingReportColumns as columns } from './aging-report-columns'
-import { agingBuckets } from '../data/data'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { type AgingReportRow } from '../data/schema'
 
-type DataTableProps = {
-  data: AgingReportItem[]
-  search: Record<string, unknown>
-  navigate: NavigateFn
+type AgingReportTableProps = {
+  data: AgingReportRow[]
 }
 
-export function AgingReportTable({ data, search, navigate }: DataTableProps) {
-  // Local UI-only states
-  const [rowSelection, setRowSelection] = useState({})
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [sorting, setSorting] = useState<SortingState>([])
+const formatAmount = (value: number) => {
+  return `$ ${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
 
-  // Synced with URL states
-  const {
-    columnFilters,
-    onColumnFiltersChange,
-    pagination,
-    onPaginationChange,
-    ensurePageInRange,
-  } = useTableUrlState({
-    search,
-    navigate,
-    pagination: { defaultPage: 1, defaultPageSize: 10 },
-    globalFilter: { enabled: false },
-    columnFilters: [
-      { columnId: 'customerName', searchKey: 'customerName', type: 'string' },
-      { columnId: 'agingBucket', searchKey: 'agingBucket', type: 'array' },
-    ],
-  })
+const bucketClass = (bucket: '1-30' | '31-60' | '61-90' | '90+', value: number) => {
+  if (value === 0) return 'bg-muted text-foreground'
+  switch (bucket) {
+    case '1-30':
+      return 'bg-muted text-foreground'
+    case '31-60':
+      return 'bg-blue-500/30 text-blue-100'
+    case '61-90':
+      return 'bg-amber-200/50 text-amber-900'
+    case '90+':
+      return 'bg-rose-500/30 text-rose-100'
+    default:
+      return 'bg-muted text-foreground'
+  }
+}
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-      pagination,
-      rowSelection,
-      columnFilters,
-      columnVisibility,
-    },
-    enableRowSelection: true,
-    onPaginationChange,
-    onColumnFiltersChange,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnVisibilityChange: setColumnVisibility,
-    getPaginationRowModel: getPaginationRowModel(),
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
-
-  useEffect(() => {
-    ensurePageInRange(table.getPageCount())
-  }, [table, ensurePageInRange])
-
+export function AgingReportTable({ data }: AgingReportTableProps) {
   return (
-    <div
-      className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4'
-      )}
-    >
-      <DataTableToolbar
-        table={table}
-        searchPlaceholder='Search customers...'
-        searchKey='customerName'
-        filters={[
-          {
-            columnId: 'agingBucket',
-            title: 'Aging Bucket',
-            options: agingBuckets,
-          },
-        ]}
-      />
-      <div className='rounded-md border'>
+    <div className='flex flex-col gap-4 overflow-hidden rounded-md border bg-card'>
+      <div className='overflow-auto'>
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableHead>Customer</TableHead>
+              <TableHead>1 - 30</TableHead>
+              <TableHead>31 - 60</TableHead>
+              <TableHead>61 - 90</TableHead>
+              <TableHead>&gt;90</TableHead>
+              <TableHead className='text-right'>Outstanding Amount</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              <>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-                {/* Summary Row */}
-                <TableRow className='bg-muted/50 font-semibold'>
-                  <TableCell colSpan={3} className='text-right'>
-                    Total:
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className='text-end font-semibold'>
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                    }).format(
-                      table
-                        .getRowModel()
-                        .rows.reduce((sum, row) => sum + (row.original.amount || 0), 0)
-                    )}
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </>
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No results.
+            {data.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell className='font-medium'>{row.customer}</TableCell>
+                <TableCell>
+                  <Badge variant='outline' className={bucketClass('1-30', row.bucket_1_30)}>
+                    {formatAmount(row.bucket_1_30)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant='outline' className={bucketClass('31-60', row.bucket_31_60)}>
+                    {formatAmount(row.bucket_31_60)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant='outline' className={bucketClass('61-90', row.bucket_61_90)}>
+                    {formatAmount(row.bucket_61_90)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant='outline' className={bucketClass('90+', row.bucket_90_plus)}>
+                    {formatAmount(row.bucket_90_plus)}
+                  </Badge>
+                </TableCell>
+                <TableCell className='text-right'>
+                  <Badge variant='outline' className='bg-muted text-foreground'>
+                    {formatAmount(row.outstanding)}
+                  </Badge>
                 </TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+
+      {/* Pagination footer placeholder to match screenshot */}
+      <div className='flex items-center justify-between border-t px-4 py-3 text-sm text-muted-foreground'>
+        <span>Page 1 of 10</span>
+        <div className='flex gap-2'>
+          <button className='rounded-md border px-3 py-1 disabled:opacity-50' disabled>
+            Previous
+          </button>
+          <button className='rounded-md border px-3 py-1'>Next</button>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,15 +1,10 @@
-export type AgingBucket = '0-30' | '31-60' | '61-90' | '90+'
-
-export type AgingReportItem = {
+export type AgingReportRow = {
   id: string
-  customerName: string
-  customerId: string
-  invoiceNumber: string
-  invoiceDate: Date
-  dueDate: Date
-  amount: number
-  daysOverdue: number
-  agingBucket: AgingBucket
-  totalOutstanding: number
+  customer: string
+  bucket_1_30: number
+  bucket_31_60: number
+  bucket_61_90: number
+  bucket_90_plus: number
+  outstanding: number
 }
 
