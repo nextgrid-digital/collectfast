@@ -1,80 +1,10 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, Building2 } from 'lucide-react'
-import { toast } from 'sonner'
-import { sleep } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { useCompany } from '@/context/company-context'
 
-const formSchema = z.object({
-  company_name: z.string().min(1, 'Company name is required'),
-  erp_provider: z.literal('quickbooks'),
-  industry: z.string().min(1, 'Industry is required'),
-  company_size: z.string().min(1, 'Company size is required'),
-  timezone: z.string().min(1, 'Timezone is required'),
-  currency: z.string().min(1, 'Currency is required'),
-  primary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
-  secondary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
-  company_logo: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-})
-
 export function NewClient() {
-  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const { isAccountant } = useCompany()
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      company_name: 'Acme Corporation',
-      erp_provider: 'quickbooks' as const,
-      industry: 'Software',
-      company_size: 'Small (10-50 employees)',
-      timezone: 'America/New_York',
-      currency: 'USD',
-      primary_color: '#3b82f6',
-      secondary_color: '#60a5fa',
-      company_logo: 'https://example.com/logo.png',
-    },
-  })
-
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-
-    toast.promise(sleep(2000), {
-      loading: 'Creating new client...',
-      success: () => {
-        setIsLoading(false)
-        // In a real app, this would create the company via API
-        // For prototype, just show success and redirect
-        navigate({ to: '/app/accountant-dashboard', replace: true })
-        return `Client "${data.company_name}" created successfully!`
-      },
-      error: () => {
-        setIsLoading(false)
-        return 'Error creating client'
-      },
-    })
-  }
 
   if (!isAccountant) {
     navigate({ to: '/app' })
@@ -93,213 +23,20 @@ export function NewClient() {
             </p>
           </div>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              {/* QuickBooks Button */}
-              <Button
-                type='button'
-                variant='default'
-                className='w-full'
-                disabled
-              >
-                <div className='h-4 w-4 rounded bg-blue-600 flex items-center justify-center shrink-0 mr-2'>
-                  <span className='text-white font-bold text-xs'>QB</span>
-                </div>
-                Sign in with Quickbooks
-              </Button>
-
-              {/* Form Fields */}
-              <FormField
-                control={form.control}
-                name='company_name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Acme Corporation' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className='grid grid-cols-2 gap-4'>
-                <FormField
-                  control={form.control}
-                  name='industry'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Industry</FormLabel>
-                      <FormControl>
-                        <Input placeholder='Software' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='company_size'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Size</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select size' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value='Small (1-10 employees)'>
-                            Small (1-10 employees)
-                          </SelectItem>
-                          <SelectItem value='Small (10-50 employees)'>
-                            Small (10-50 employees)
-                          </SelectItem>
-                          <SelectItem value='Medium (50-200 employees)'>
-                            Medium (50-200 employees)
-                          </SelectItem>
-                          <SelectItem value='Large (200+ employees)'>
-                            Large (200+ employees)
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <div className='space-y-4'>
+            {/* QuickBooks Button */}
+            <Button
+              type='button'
+              variant='default'
+              className='w-full'
+              disabled
+            >
+              <div className='h-4 w-4 rounded bg-blue-600 flex items-center justify-center shrink-0 mr-2'>
+                <span className='text-white font-bold text-xs'>QB</span>
               </div>
-
-              <div className='grid grid-cols-2 gap-4'>
-                <FormField
-                  control={form.control}
-                  name='timezone'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Timezone</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select timezone' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value='America/New_York'>Eastern Time (ET)</SelectItem>
-                          <SelectItem value='America/Chicago'>Central Time (CT)</SelectItem>
-                          <SelectItem value='America/Denver'>Mountain Time (MT)</SelectItem>
-                          <SelectItem value='America/Los_Angeles'>Pacific Time (PT)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='currency'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Currency</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select currency' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value='USD'>USD - US Dollar</SelectItem>
-                          <SelectItem value='EUR'>EUR - Euro</SelectItem>
-                          <SelectItem value='GBP'>GBP - British Pound</SelectItem>
-                          <SelectItem value='CAD'>CAD - Canadian Dollar</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className='grid grid-cols-2 gap-4'>
-                <FormField
-                  control={form.control}
-                  name='primary_color'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Primary Color</FormLabel>
-                      <FormControl>
-                        <div className='flex gap-2'>
-                          <Input
-                            type='color'
-                            className='w-16 h-10'
-                            {...field}
-                            value={field.value || '#3b82f6'}
-                          />
-                          <Input placeholder='#3b82f6' {...field} className='flex-1' />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='secondary_color'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Secondary Color</FormLabel>
-                      <FormControl>
-                        <div className='flex gap-2'>
-                          <Input
-                            type='color'
-                            className='w-16 h-10'
-                            {...field}
-                            value={field.value || '#60a5fa'}
-                          />
-                          <Input placeholder='#60a5fa' {...field} className='flex-1' />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name='company_logo'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Logo URL</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='https://example.com/logo.png'
-                        {...field}
-                        value={field.value || ''}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type='submit' className='w-full' disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Building2 className='mr-2 h-4 w-4' />
-                    Add Client
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
+              Sign in with Quickbooks
+            </Button>
+          </div>
 
           <p className='text-muted-foreground px-8 text-center text-sm'>
             By clicking continue, you agree to our{' '}
