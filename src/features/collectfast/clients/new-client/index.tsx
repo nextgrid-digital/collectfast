@@ -29,7 +29,6 @@ export function NewClient() {
               type='button'
               variant='default'
               className='w-full'
-              disabled
             >
               <div className='h-4 w-4 rounded bg-blue-600 flex items-center justify-center shrink-0 mr-2'>
                 <span className='text-white font-bold text-xs'>QB</span>
