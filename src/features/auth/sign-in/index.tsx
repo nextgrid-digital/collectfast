@@ -1,4 +1,4 @@
-import { Link, useSearch } from '@tanstack/react-router'
+import { useSearch } from '@tanstack/react-router'
 import { UserAuthForm } from './components/user-auth-form'
 
 export function SignIn() {
@@ -9,23 +9,6 @@ export function SignIn() {
       {/* Left Column - Sign In Form */}
       <div className='lg:p-8 w-full'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-2 py-8 sm:w-[480px] sm:p-8'>
-          {/* Top Right Sign Up Link */}
-          <div className='flex justify-end mb-4'>
-            <Link
-              to='/sign-up'
-              className='text-sm text-muted-foreground hover:text-primary underline underline-offset-4'
-            >
-              Sign up
-            </Link>
-          </div>
-
-          <div className='flex flex-col space-y-2 text-start'>
-            <h2 className='text-2xl font-semibold tracking-tight'>Sign in</h2>
-            <p className='text-muted-foreground text-sm'>
-              Enter your email and password below to log into your account
-            </p>
-          </div>
-
           <UserAuthForm redirectTo={redirect} />
 
           <p className='text-muted-foreground px-8 text-center text-sm'>
