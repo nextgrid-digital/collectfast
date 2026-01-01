@@ -67,15 +67,15 @@ export function NewClient() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company_name: '',
-      erp_provider: undefined,
-      industry: '',
-      company_size: '',
+      company_name: 'Acme Corporation',
+      erp_provider: 'quickbooks' as const,
+      industry: 'Software',
+      company_size: 'Small (10-50 employees)',
       timezone: 'America/New_York',
       currency: 'USD',
       primary_color: '#3b82f6',
       secondary_color: '#60a5fa',
-      company_logo: '',
+      company_logo: 'https://example.com/logo.png',
     },
   })
 
