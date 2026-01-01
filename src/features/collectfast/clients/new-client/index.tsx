@@ -25,26 +25,20 @@ import {
 } from '@/components/ui/select'
 import { useCompany } from '@/context/company-context'
 
-const formSchema = z
-  .object({
-    company_name: z.string().min(1, 'Company name is required'),
-    erp_provider: z.enum(['quickbooks', 'xero', 'freshbooks']).optional(),
-    industry: z.string().min(1, 'Industry is required'),
-    company_size: z.string().min(1, 'Company size is required'),
-    timezone: z.string().min(1, 'Timezone is required'),
-    currency: z.string().min(1, 'Currency is required'),
-    primary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
-    secondary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
-    company_logo: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-  })
-  .refine((data) => data.erp_provider !== undefined, {
-    message: 'Please select an ERP provider',
-    path: ['erp_provider'],
-  })
+const formSchema = z.object({
+  company_name: z.string().min(1, 'Company name is required'),
+  erp_provider: z.literal('quickbooks'),
+  industry: z.string().min(1, 'Industry is required'),
+  company_size: z.string().min(1, 'Company size is required'),
+  timezone: z.string().min(1, 'Timezone is required'),
+  currency: z.string().min(1, 'Currency is required'),
+  primary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
+  secondary_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Please enter a valid hex color'),
+  company_logo: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+})
 
 export function NewClient() {
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedERP, setSelectedERP] = useState<'quickbooks' | 'xero' | 'freshbooks' | null>(null)
   const navigate = useNavigate()
   const { isAccountant } = useCompany()
 
@@ -63,17 +57,7 @@ export function NewClient() {
     },
   })
 
-  const handleERPSelect = (provider: 'quickbooks' | 'xero' | 'freshbooks') => {
-    setSelectedERP(provider)
-    form.setValue('erp_provider', provider)
-  }
-
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    if (!selectedERP) {
-      toast.error('Please select an ERP provider')
-      return
-    }
-
     setIsLoading(true)
 
     toast.promise(sleep(2000), {
@@ -111,31 +95,18 @@ export function NewClient() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              {/* ERP Provider Buttons */}
-              <div className='grid grid-cols-2 gap-2'>
-                <Button
-                  type='button'
-                  variant={selectedERP === 'quickbooks' ? 'default' : 'outline'}
-                  className='w-full'
-                  onClick={() => handleERPSelect('quickbooks')}
-                >
-                  <div className='h-4 w-4 rounded bg-blue-600 flex items-center justify-center shrink-0 mr-2'>
-                    <span className='text-white font-bold text-xs'>QB</span>
-                  </div>
-                  Sign in with Quickbooks
-                </Button>
-                <Button
-                  type='button'
-                  variant={selectedERP === 'xero' ? 'default' : 'outline'}
-                  className='w-full'
-                  onClick={() => handleERPSelect('xero')}
-                >
-                  <div className='h-4 w-4 rounded bg-teal-600 flex items-center justify-center shrink-0 mr-2'>
-                    <span className='text-white font-bold text-xs'>X</span>
-                  </div>
-                  Sign in with Xero
-                </Button>
-              </div>
+              {/* QuickBooks Button */}
+              <Button
+                type='button'
+                variant='default'
+                className='w-full'
+                disabled
+              >
+                <div className='h-4 w-4 rounded bg-blue-600 flex items-center justify-center shrink-0 mr-2'>
+                  <span className='text-white font-bold text-xs'>QB</span>
+                </div>
+                Sign in with Quickbooks
+              </Button>
 
               <div className='relative my-2'>
                 <div className='absolute inset-0 flex items-center'>
