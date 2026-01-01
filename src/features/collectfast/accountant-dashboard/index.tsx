@@ -18,7 +18,6 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { useCompany } from '@/context/company-context'
 import { getCompanySummary } from '@/data/mock/data-service'
-import { toast } from 'sonner'
 
 export function AccountantDashboard() {
   const { companies: userCompanies, isAccountant, switchCompany } = useCompany()

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { QuickBooksConnection } from './quickbooks-connection'
 import { XeroConnection } from './xero-connection'

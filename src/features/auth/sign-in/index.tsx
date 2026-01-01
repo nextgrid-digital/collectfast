@@ -1,5 +1,4 @@
 import { Link, useSearch } from '@tanstack/react-router'
-import { cn } from '@/lib/utils'
 import { UserAuthForm } from './components/user-auth-form'
 
 export function SignIn() {
