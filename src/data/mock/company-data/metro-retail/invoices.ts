@@ -1,36 +1,172 @@
-import { faker } from '@faker-js/faker'
 import { type Invoice } from '@/features/collectfast/invoices/data/schema'
 
-// Set a fixed seed for consistent data generation
-faker.seed(101010)
+const daysAgo = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
 
-const statuses = ['paid', 'overdue', 'due-soon', 'draft', 'sent'] as const
+const daysFromNow = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() + n)
+  return d
+}
 
-export const metroRetailInvoices: Invoice[] = Array.from({ length: 78 }, () => {
-  const issueDate = faker.date.past({ years: 1 })
-  const dueDate = faker.date.between({
-    from: issueDate,
-    to: new Date(issueDate.getTime() + 90 * 24 * 60 * 60 * 1000),
-  })
-  const isPaid = faker.datatype.boolean({ probability: 0.3 })
-  const status = isPaid
-    ? 'paid'
-    : dueDate < new Date()
-      ? 'overdue'
-      : faker.helpers.arrayElement(statuses)
-
-  return {
-    id: faker.string.uuid(),
-    invoiceNumber: `MR-${faker.string.alphanumeric(6).toUpperCase()}`,
-    customerName: `${faker.person.firstName()} ${faker.person.lastName()}`,
-    customerId: faker.string.uuid(),
-    amount: parseFloat(faker.finance.amount({ min: 200, max: 20000, dec: 2 })),
-    dueDate,
-    issueDate,
-    status,
-    paidDate: isPaid ? faker.date.between({ from: issueDate, to: new Date() }) : null,
-    createdAt: issueDate,
-    updatedAt: faker.date.recent(),
-  }
-})
-
+export const metroRetailInvoices: Invoice[] = [
+  {
+    id: 'mr-inv-3001',
+    invoiceNumber: 'MR-3001',
+    customerName: 'Urban Threads',
+    customerId: 'mr-cust-01',
+    amount: 2750,
+    issueDate: daysAgo(55),
+    dueDate: daysAgo(20),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(55),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'mr-inv-3002',
+    invoiceNumber: 'MR-3002',
+    customerName: 'Moda Home',
+    customerId: 'mr-cust-02',
+    amount: 1890,
+    issueDate: daysAgo(25),
+    dueDate: daysFromNow(5),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(25),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'mr-inv-3003',
+    invoiceNumber: 'MR-3003',
+    customerName: 'Brightway Stores',
+    customerId: 'mr-cust-03',
+    amount: 1980,
+    issueDate: daysAgo(40),
+    dueDate: daysAgo(14),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(40),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'mr-inv-3004',
+    invoiceNumber: 'MR-3004',
+    customerName: 'Harbor Market',
+    customerId: 'mr-cust-04',
+    amount: 1450,
+    issueDate: daysAgo(18),
+    dueDate: daysAgo(7),
+    status: 'paid',
+    paidDate: daysAgo(1),
+    createdAt: daysAgo(18),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'mr-inv-3005',
+    invoiceNumber: 'MR-3005',
+    customerName: 'Nexus Apparel',
+    customerId: 'mr-cust-05',
+    amount: 3220,
+    issueDate: daysAgo(75),
+    dueDate: daysAgo(35),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(75),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'mr-inv-3006',
+    invoiceNumber: 'MR-3006',
+    customerName: 'Atlas Furnishings',
+    customerId: 'mr-cust-06',
+    amount: 1675,
+    issueDate: daysAgo(20),
+    dueDate: daysFromNow(4),
+    status: 'due-soon',
+    paidDate: null,
+    createdAt: daysAgo(20),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'mr-inv-3007',
+    invoiceNumber: 'MR-3007',
+    customerName: 'Lakeside Mart',
+    customerId: 'mr-cust-07',
+    amount: 2540,
+    issueDate: daysAgo(32),
+    dueDate: daysAgo(8),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(32),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'mr-inv-3008',
+    invoiceNumber: 'MR-3008',
+    customerName: 'Downtown Supply',
+    customerId: 'mr-cust-08',
+    amount: 1380,
+    issueDate: daysAgo(22),
+    dueDate: daysFromNow(6),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(22),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'mr-inv-3009',
+    invoiceNumber: 'MR-3009',
+    customerName: 'Central Outfitters',
+    customerId: 'mr-cust-09',
+    amount: 3600,
+    issueDate: daysAgo(85),
+    dueDate: daysAgo(50),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(85),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'mr-inv-3010',
+    invoiceNumber: 'MR-3010',
+    customerName: 'Beacon Living',
+    customerId: 'mr-cust-10',
+    amount: 980,
+    issueDate: daysAgo(10),
+    dueDate: daysFromNow(12),
+    status: 'draft',
+    paidDate: null,
+    createdAt: daysAgo(10),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'mr-inv-3011',
+    invoiceNumber: 'MR-3011',
+    customerName: 'Everest Retail',
+    customerId: 'mr-cust-11',
+    amount: 4200,
+    issueDate: daysAgo(45),
+    dueDate: daysAgo(5),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(45),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'mr-inv-3012',
+    invoiceNumber: 'MR-3012',
+    customerName: 'Northgate Market',
+    customerId: 'mr-cust-12',
+    amount: 2050,
+    issueDate: daysAgo(18),
+    dueDate: daysFromNow(8),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(18),
+    updatedAt: daysAgo(1),
+  },
+]

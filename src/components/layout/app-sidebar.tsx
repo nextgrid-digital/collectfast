@@ -14,11 +14,10 @@ import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { CompanySwitcherSidebar } from '@/components/company-switcher-sidebar'
 import { useCompany } from '@/context/company-context'
-import { Badge } from '@/components/ui/badge'
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
-  const { currentCompany, isAccountant } = useCompany()
+  const { isAccountant } = useCompany()
   
   // Filter navigation items based on role
   const navGroups = useMemo(() => {
@@ -69,22 +68,6 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        {/* Role Badge */}
-        {currentCompany && (
-          <div className='px-2 pb-2'>
-            <Badge
-              variant='outline'
-              className='w-full justify-center text-xs'
-              style={{
-                borderColor: currentCompany.primary_color,
-                color: currentCompany.primary_color,
-                backgroundColor: `${currentCompany.primary_color}10`,
-              }}
-            >
-              {isAccountant ? '👔 Accountant View' : '👤 Owner View'}
-            </Badge>
-          </div>
-        )}
         <NavUser user={sidebarData.user} />
       </SidebarFooter>
       <SidebarRail />

@@ -16,11 +16,11 @@ const bucketClass = (bucket: '1-30' | '31-60' | '61-90' | '90+', value: number) 
     case '1-30':
       return 'bg-muted text-foreground'
     case '31-60':
-      return 'bg-blue-500/30 text-blue-100'
+      return 'bg-blue-500/30 text-blue-700 dark:text-blue-300'
     case '61-90':
       return 'bg-amber-200/50 text-amber-900'
     case '90+':
-      return 'bg-rose-500/30 text-rose-100'
+      return 'bg-rose-500/30 text-rose-700 dark:text-rose-300'
     default:
       return 'bg-muted text-foreground'
   }

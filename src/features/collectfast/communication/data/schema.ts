@@ -2,7 +2,7 @@ export type Communication = {
   id: string
   customerName: string
   customerId: string
-  type: 'email' | 'sms' | 'call' | 'reminder' | 'letter'
+  type: 'email'
   subject: string
   message: string
   status: 'sent' | 'delivered' | 'read' | 'failed' | 'scheduled'

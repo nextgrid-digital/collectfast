@@ -16,7 +16,7 @@ export function NewClient() {
       {/* Left Column - New Client Form */}
       <div className='lg:p-8 w-full'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-2 py-8 sm:w-[480px] sm:p-8'>
-          <div className='flex flex-col space-y-2 text-start'>
+          <div className='flex flex-col space-y-2 text-center'>
             <h2 className='text-2xl font-semibold tracking-tight'>Add New Client</h2>
             <p className='text-muted-foreground text-sm'>
               Enter the details below to add a new client company

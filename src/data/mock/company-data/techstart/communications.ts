@@ -1,120 +1,141 @@
-import { faker } from '@faker-js/faker'
-import { format } from 'date-fns'
 import { type Communication } from '@/features/collectfast/communication/data/schema'
+import { techstartInvoices } from './invoices'
 
-// Set a fixed seed for consistent data generation
-faker.seed(33333)
+const daysAgo = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
 
-const types = ['email', 'sms', 'call', 'reminder', 'letter'] as const
-const statuses = ['sent', 'delivered', 'read', 'failed', 'scheduled'] as const
-const templates = [
-  'Payment Reminder',
-  'Overdue Notice',
-  'Thank You',
-  'Invoice Sent',
-  'Payment Received',
-  null,
-] as const
+const addDays = (date: Date, days: number) => {
+  const d = new Date(date)
+  d.setDate(d.getDate() + days)
+  return d
+}
 
-const generatePaymentReminderMessage = (
-  customerName: string,
-  invoiceNumber: string,
-  invoiceDate: string,
-  amount: number,
-  dueDate: string,
-  daysOverdue: number
-) => {
-  if (daysOverdue > 0) {
-    return `Dear ${customerName}, I hope this message finds you well.
+const generateInvoiceSentMessage = (customer: string, invoice: string, amount: number, dueDate: Date) => {
+  return `Dear ${customer},
 
-This is a reminder that the remaining balance of $${amount.toFixed(2)} for invoice ${invoiceNumber}, dated ${invoiceDate}, is now overdue. We had agreed on a payment date of ${dueDate}, which has unfortunately passed without receipt of the payment.
+Your invoice ${invoice} for $${amount.toFixed(2)} has been sent. Payment is due on ${dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.
 
-We kindly request that you arrange for the immediate payment of the outstanding balance to avoid any further action.
+Please arrange payment by the due date to avoid any late fees.
 
-For your reference, the payment details are as follows:
-- Invoice Number: ${invoiceNumber}
-- Invoice Date: ${invoiceDate}
-- Outstanding Amount: $${amount.toFixed(2)}
-
-If you have already made the payment, please disregard this message and let us know the details of the transaction. Otherwise, we would appreciate your prompt attention to this matter.
-
-Thank you for your cooperation.
+Thank you for your business.
 
 Best regards,
-TechStart Inc. Team`
-  }
+TechStart Inc. Collections Team`
+}
 
-  return `Dear ${customerName}, I hope this message finds you well.
+const generateReminderMessage = (customer: string, invoice: string, amount: number, daysOverdue: number, reminderNumber: number) => {
+  const ordinal = reminderNumber === 1 ? '1st' : reminderNumber === 2 ? '2nd' : '3rd'
+  return `Dear ${customer},
 
-We are writing to remind you that your invoice ${invoiceNumber}, dated ${invoiceDate}, is now ${daysOverdue} days overdue. The total amount due is $${amount.toFixed(2)}.
+This is your ${ordinal} reminder that invoice ${invoice} for $${amount.toFixed(2)} is now ${daysOverdue} day${daysOverdue !== 1 ? 's' : ''} overdue.
 
-Please arrange for payment at your earliest convenience to avoid any further action.
+We kindly request that you arrange payment at your earliest convenience. If you have already made the payment, please disregard this message and provide us with your remittance advice.
+
+If you have any questions or concerns, please contact us immediately.
 
 Thank you for your attention to this matter.
 
 Best regards,
-TechStart Inc. Team`
+TechStart Inc. Collections Team`
 }
 
-export const techstartCommunications: Communication[] = Array.from(
-  { length: 120 },
-  () => {
-    const type = faker.helpers.arrayElement(types)
-    const status = faker.helpers.arrayElement(statuses)
-    const sentDate = faker.date.recent({ days: 60 })
-    const isScheduled = status === 'scheduled'
-    const scheduledDate = isScheduled ? faker.date.soon({ days: 30 }) : null
+function generateCommunicationsForInvoice(
+  invoice: typeof techstartInvoices[0],
+  prefix: string
+): Communication[] {
+  const comms: Communication[] = []
+  const now = new Date()
+  const daysSinceDue = Math.floor((now.getTime() - invoice.dueDate.getTime()) / (1000 * 60 * 60 * 24))
 
-    const customerName = `${faker.person.firstName()} ${faker.person.lastName()}`
-    const invoiceNumber = faker.datatype.boolean({ probability: 0.7 })
-      ? `TS${faker.string.alphanumeric(5).toUpperCase()}`
-      : null
-    const invoiceDate = faker.date.past({ years: 1 })
-    const dueDate = faker.date.between({
-      from: invoiceDate,
-      to: new Date(invoiceDate.getTime() + 90 * 24 * 60 * 60 * 1000),
-    })
-    const amount = parseFloat(faker.finance.amount({ min: 200, max: 5000, dec: 2 }))
-    const daysOverdue = Math.max(
-      0,
-      Math.floor((new Date().getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24))
-    )
+  // 1. Invoice sent email (on due date)
+  comms.push({
+    id: `${prefix}-inv-sent-${invoice.invoiceNumber}`,
+    customerName: invoice.customerName,
+    customerId: invoice.customerId,
+    type: 'email',
+    subject: `Invoice ${invoice.invoiceNumber} – Payment Due`,
+    message: generateInvoiceSentMessage(invoice.customerName, invoice.invoiceNumber, invoice.amount, invoice.dueDate),
+    status: 'read',
+    sentDate: invoice.dueDate,
+    scheduledDate: null,
+    template: 'Invoice Sent',
+    relatedInvoiceId: invoice.invoiceNumber,
+    createdAt: invoice.dueDate,
+    updatedAt: invoice.dueDate,
+  })
 
-    const subject = invoiceNumber
-      ? `Dear ${customerName}, I hope this message finds you well.`
-      : faker.helpers.arrayElement([
-          'Payment Reminder',
-          'Overdue Payment Notice',
-          'Thank you for your payment',
-          'Payment Confirmation',
-        ])
+  // Only generate reminders if invoice is overdue
+  if (daysSinceDue > 0 && invoice.status !== 'paid') {
+    // 1st reminder (7 days after due date)
+    if (daysSinceDue >= 7) {
+      const firstReminderDate = addDays(invoice.dueDate, 7)
+      const daysOverdueAtFirstReminder = 7 // Days overdue at the time this reminder was sent
+      comms.push({
+        id: `${prefix}-reminder-1-${invoice.invoiceNumber}`,
+        customerName: invoice.customerName,
+        customerId: invoice.customerId,
+        type: 'email',
+        subject: `Invoice ${invoice.invoiceNumber} – 1st Reminder (${daysOverdueAtFirstReminder} days overdue)`,
+        message: generateReminderMessage(invoice.customerName, invoice.invoiceNumber, invoice.amount, daysOverdueAtFirstReminder, 1),
+        status: daysSinceDue <= 14 ? 'delivered' : 'read',
+        sentDate: firstReminderDate,
+        scheduledDate: null,
+        template: 'Payment Reminder',
+        relatedInvoiceId: invoice.invoiceNumber,
+        createdAt: firstReminderDate,
+        updatedAt: firstReminderDate,
+      })
+    }
 
-    const message = invoiceNumber
-      ? generatePaymentReminderMessage(
-          customerName,
-          invoiceNumber,
-          format(invoiceDate, 'MMMM d, yyyy'),
-          amount,
-          format(dueDate, 'MMMM d, yyyy'),
-          daysOverdue
-        )
-      : faker.lorem.paragraph({ min: 2, max: 4 })
+    // 2nd reminder (15 days after due date)
+    if (daysSinceDue >= 15) {
+      const secondReminderDate = addDays(invoice.dueDate, 15)
+      const daysOverdueAtSecondReminder = 15 // Days overdue at the time this reminder was sent
+      comms.push({
+        id: `${prefix}-reminder-2-${invoice.invoiceNumber}`,
+        customerName: invoice.customerName,
+        customerId: invoice.customerId,
+        type: 'email',
+        subject: `Invoice ${invoice.invoiceNumber} – 2nd Reminder (${daysOverdueAtSecondReminder} days overdue)`,
+        message: generateReminderMessage(invoice.customerName, invoice.invoiceNumber, invoice.amount, daysOverdueAtSecondReminder, 2),
+        status: daysSinceDue <= 25 ? 'delivered' : daysSinceDue <= 30 ? 'read' : 'failed',
+        sentDate: secondReminderDate,
+        scheduledDate: null,
+        template: 'Overdue Notice',
+        relatedInvoiceId: invoice.invoiceNumber,
+        createdAt: secondReminderDate,
+        updatedAt: secondReminderDate,
+      })
+    }
 
-    return {
-      id: faker.string.uuid(),
-      customerName,
-      customerId: faker.string.uuid(),
-      type,
-      subject,
-      message,
-      status,
-      sentDate: isScheduled ? new Date() : sentDate,
-      scheduledDate,
-      template: faker.helpers.arrayElement(templates),
-      relatedInvoiceId: invoiceNumber,
-      createdAt: sentDate,
-      updatedAt: faker.date.recent(),
+    // 3rd reminder (30 days after due date)
+    if (daysSinceDue >= 30) {
+      const thirdReminderDate = addDays(invoice.dueDate, 30)
+      const daysOverdueAtThirdReminder = 30 // Days overdue at the time this reminder was sent
+      comms.push({
+        id: `${prefix}-reminder-3-${invoice.invoiceNumber}`,
+        customerName: invoice.customerName,
+        customerId: invoice.customerId,
+        type: 'email',
+        subject: `Invoice ${invoice.invoiceNumber} – 3rd Reminder (${daysOverdueAtThirdReminder} days overdue)`,
+        message: generateReminderMessage(invoice.customerName, invoice.invoiceNumber, invoice.amount, daysOverdueAtThirdReminder, 3),
+        status: daysSinceDue <= 45 ? 'sent' : 'failed',
+        sentDate: thirdReminderDate,
+        scheduledDate: null,
+        template: 'Overdue Notice',
+        relatedInvoiceId: invoice.invoiceNumber,
+        createdAt: thirdReminderDate,
+        updatedAt: thirdReminderDate,
+      })
     }
   }
-)
 
+  return comms
+}
+
+export const techstartCommunications: Communication[] = techstartInvoices.flatMap((invoice) =>
+  generateCommunicationsForInvoice(invoice, 'ts')
+)

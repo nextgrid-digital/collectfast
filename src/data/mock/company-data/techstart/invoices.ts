@@ -1,36 +1,172 @@
-import { faker } from '@faker-js/faker'
 import { type Invoice } from '@/features/collectfast/invoices/data/schema'
 
-// Set a fixed seed for consistent data generation
-faker.seed(22222)
+const daysAgo = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
 
-const statuses = ['paid', 'overdue', 'due-soon', 'draft', 'sent'] as const
+const daysFromNow = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() + n)
+  return d
+}
 
-export const techstartInvoices: Invoice[] = Array.from({ length: 45 }, () => {
-  const issueDate = faker.date.past({ years: 1 })
-  const dueDate = faker.date.between({
-    from: issueDate,
-    to: new Date(issueDate.getTime() + 90 * 24 * 60 * 60 * 1000),
-  })
-  const isPaid = faker.datatype.boolean({ probability: 0.35 })
-  const status = isPaid
-    ? 'paid'
-    : dueDate < new Date()
-      ? 'overdue'
-      : faker.helpers.arrayElement(statuses)
-
-  return {
-    id: faker.string.uuid(),
-    invoiceNumber: `TS-${faker.string.alphanumeric(6).toUpperCase()}`,
-    customerName: `${faker.person.firstName()} ${faker.person.lastName()}`,
-    customerId: faker.string.uuid(),
-    amount: parseFloat(faker.finance.amount({ min: 500, max: 15000, dec: 2 })),
-    dueDate,
-    issueDate,
-    status,
-    paidDate: isPaid ? faker.date.between({ from: issueDate, to: new Date() }) : null,
-    createdAt: issueDate,
-    updatedAt: faker.date.recent(),
-  }
-})
-
+export const techstartInvoices: Invoice[] = [
+  {
+    id: 'ts-inv-1001',
+    invoiceNumber: 'TS-1001',
+    customerName: 'Acme Robotics',
+    customerId: 'ts-cust-01',
+    amount: 4800,
+    issueDate: daysAgo(70),
+    dueDate: daysAgo(25),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(70),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'ts-inv-1002',
+    invoiceNumber: 'TS-1002',
+    customerName: 'Bright Labs',
+    customerId: 'ts-cust-02',
+    amount: 2150,
+    issueDate: daysAgo(30),
+    dueDate: daysFromNow(5),
+    status: 'due-soon',
+    paidDate: null,
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(3),
+  },
+  {
+    id: 'ts-inv-1003',
+    invoiceNumber: 'TS-1003',
+    customerName: 'Nova Supplies',
+    customerId: 'ts-cust-03',
+    amount: 1320,
+    issueDate: daysAgo(50),
+    dueDate: daysAgo(18),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(50),
+    updatedAt: daysAgo(5),
+  },
+  {
+    id: 'ts-inv-1004',
+    invoiceNumber: 'TS-1004',
+    customerName: 'PixelCraft',
+    customerId: 'ts-cust-04',
+    amount: 980,
+    issueDate: daysAgo(25),
+    dueDate: daysAgo(10),
+    status: 'paid',
+    paidDate: daysAgo(2),
+    createdAt: daysAgo(25),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'ts-inv-1005',
+    invoiceNumber: 'TS-1005',
+    customerName: 'Harbor Logistics',
+    customerId: 'ts-cust-05',
+    amount: 920,
+    issueDate: daysAgo(20),
+    dueDate: daysAgo(5),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(20),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'ts-inv-1006',
+    invoiceNumber: 'TS-1006',
+    customerName: 'Northwind Textiles',
+    customerId: 'ts-cust-06',
+    amount: 2650,
+    issueDate: daysAgo(40),
+    dueDate: daysAgo(12),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(40),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'ts-inv-1007',
+    invoiceNumber: 'TS-1007',
+    customerName: 'Orion Media',
+    customerId: 'ts-cust-07',
+    amount: 5400,
+    issueDate: daysAgo(80),
+    dueDate: daysAgo(35),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(80),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'ts-inv-1008',
+    invoiceNumber: 'TS-1008',
+    customerName: 'Lumen Analytics',
+    customerId: 'ts-cust-08',
+    amount: 1450,
+    issueDate: daysAgo(22),
+    dueDate: daysAgo(9),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(22),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'ts-inv-1009',
+    invoiceNumber: 'TS-1009',
+    customerName: 'Summit Hardware',
+    customerId: 'ts-cust-09',
+    amount: 780,
+    issueDate: daysAgo(15),
+    dueDate: daysFromNow(5),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(15),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'ts-inv-1010',
+    invoiceNumber: 'TS-1010',
+    customerName: 'Vertex Health',
+    customerId: 'ts-cust-10',
+    amount: 3100,
+    issueDate: daysAgo(35),
+    dueDate: daysAgo(5),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(35),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'ts-inv-1011',
+    invoiceNumber: 'TS-1011',
+    customerName: 'Evergreen Digital',
+    customerId: 'ts-cust-11',
+    amount: 3100,
+    issueDate: daysAgo(55),
+    dueDate: daysAgo(22),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(55),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'ts-inv-1012',
+    invoiceNumber: 'TS-1012',
+    customerName: 'Redbridge Security',
+    customerId: 'ts-cust-12',
+    amount: 1875,
+    issueDate: daysAgo(18),
+    dueDate: daysFromNow(10),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(18),
+    updatedAt: daysAgo(0),
+  },
+]

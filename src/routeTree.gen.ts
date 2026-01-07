@@ -49,6 +49,7 @@ import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AppCommunicationEntityTypeEntityIdRouteImport } from './routes/app/communication/$entityType.$entityId'
 
 const ClerkRouteRoute = ClerkRouteRouteImport.update({
   id: '/clerk',
@@ -256,6 +257,12 @@ const AuthenticatedErrorsErrorRoute =
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AppCommunicationEntityTypeEntityIdRoute =
+  AppCommunicationEntityTypeEntityIdRouteImport.update({
+    id: '/$entityType/$entityId',
+    path: '/$entityType/$entityId',
+    getParentRoute: () => AppCommunicationRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -274,7 +281,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
-  '/app/communication': typeof AppCommunicationRoute
+  '/app/communication': typeof AppCommunicationRouteWithChildren
   '/app/customers': typeof AppCustomersRoute
   '/app/invoices': typeof AppInvoicesRoute
   '/app/new-client': typeof AppNewClientRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/app/communication/$entityType/$entityId': typeof AppCommunicationEntityTypeEntityIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -311,7 +319,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
-  '/app/communication': typeof AppCommunicationRoute
+  '/app/communication': typeof AppCommunicationRouteWithChildren
   '/app/customers': typeof AppCustomersRoute
   '/app/invoices': typeof AppInvoicesRoute
   '/app/new-client': typeof AppNewClientRoute
@@ -332,6 +340,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/app/communication/$entityType/$entityId': typeof AppCommunicationEntityTypeEntityIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -354,7 +363,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/app/accountant-dashboard': typeof AppAccountantDashboardRoute
   '/app/aging-report': typeof AppAgingReportRoute
-  '/app/communication': typeof AppCommunicationRoute
+  '/app/communication': typeof AppCommunicationRouteWithChildren
   '/app/customers': typeof AppCustomersRoute
   '/app/invoices': typeof AppInvoicesRoute
   '/app/new-client': typeof AppNewClientRoute
@@ -375,6 +384,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/app/communication/$entityType/$entityId': typeof AppCommunicationEntityTypeEntityIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -416,6 +426,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/tasks'
     | '/users'
+    | '/app/communication/$entityType/$entityId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -453,6 +464,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/app/communication/$entityType/$entityId'
   id:
     | '__root__'
     | '/'
@@ -495,6 +507,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
+    | '/app/communication/$entityType/$entityId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -796,6 +809,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/app/communication/$entityType/$entityId': {
+      id: '/app/communication/$entityType/$entityId'
+      path: '/$entityType/$entityId'
+      fullPath: '/app/communication/$entityType/$entityId'
+      preLoaderRoute: typeof AppCommunicationEntityTypeEntityIdRouteImport
+      parentRoute: typeof AppCommunicationRoute
+    }
   }
 }
 
@@ -845,10 +865,22 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AppCommunicationRouteChildren {
+  AppCommunicationEntityTypeEntityIdRoute: typeof AppCommunicationEntityTypeEntityIdRoute
+}
+
+const AppCommunicationRouteChildren: AppCommunicationRouteChildren = {
+  AppCommunicationEntityTypeEntityIdRoute:
+    AppCommunicationEntityTypeEntityIdRoute,
+}
+
+const AppCommunicationRouteWithChildren =
+  AppCommunicationRoute._addFileChildren(AppCommunicationRouteChildren)
+
 interface AppRouteRouteChildren {
   AppAccountantDashboardRoute: typeof AppAccountantDashboardRoute
   AppAgingReportRoute: typeof AppAgingReportRoute
-  AppCommunicationRoute: typeof AppCommunicationRoute
+  AppCommunicationRoute: typeof AppCommunicationRouteWithChildren
   AppCustomersRoute: typeof AppCustomersRoute
   AppInvoicesRoute: typeof AppInvoicesRoute
   AppNewClientRoute: typeof AppNewClientRoute
@@ -860,7 +892,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAccountantDashboardRoute: AppAccountantDashboardRoute,
   AppAgingReportRoute: AppAgingReportRoute,
-  AppCommunicationRoute: AppCommunicationRoute,
+  AppCommunicationRoute: AppCommunicationRouteWithChildren,
   AppCustomersRoute: AppCustomersRoute,
   AppInvoicesRoute: AppInvoicesRoute,
   AppNewClientRoute: AppNewClientRoute,

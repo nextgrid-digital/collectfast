@@ -6,16 +6,9 @@ const communicationSearchSchema = z.object({
   page: z.number().optional().catch(1),
   pageSize: z.number().optional().catch(10),
   // Facet filters
+  // Type facet kept for future expansion but restricted to email for now
   type: z
-    .array(
-      z.union([
-        z.literal('email'),
-        z.literal('sms'),
-        z.literal('call'),
-        z.literal('reminder'),
-        z.literal('letter'),
-      ])
-    )
+    .array(z.literal('email'))
     .optional()
     .catch([]),
   status: z

@@ -1,36 +1,172 @@
-import { faker } from '@faker-js/faker'
 import { type Invoice } from '@/features/collectfast/invoices/data/schema'
 
-// Set a fixed seed for consistent data generation
-faker.seed(66666)
+const daysAgo = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
 
-const statuses = ['paid', 'overdue', 'due-soon', 'draft', 'sent'] as const
+const daysFromNow = (n: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() + n)
+  return d
+}
 
-export const greenleafInvoices: Invoice[] = Array.from({ length: 22 }, () => {
-  const issueDate = faker.date.past({ years: 1 })
-  const dueDate = faker.date.between({
-    from: issueDate,
-    to: new Date(issueDate.getTime() + 60 * 24 * 60 * 60 * 1000),
-  })
-  const isPaid = faker.datatype.boolean({ probability: 0.45 })
-  const status = isPaid
-    ? 'paid'
-    : dueDate < new Date()
-      ? 'overdue'
-      : faker.helpers.arrayElement(statuses)
-
-  return {
-    id: faker.string.uuid(),
-    invoiceNumber: `GL-${faker.string.alphanumeric(6).toUpperCase()}`,
-    customerName: `${faker.person.firstName()} ${faker.person.lastName()}`,
-    customerId: faker.string.uuid(),
-    amount: parseFloat(faker.finance.amount({ min: 300, max: 8000, dec: 2 })),
-    dueDate,
-    issueDate,
-    status,
-    paidDate: isPaid ? faker.date.between({ from: issueDate, to: new Date() }) : null,
-    createdAt: issueDate,
-    updatedAt: faker.date.recent(),
-  }
-})
-
+export const greenleafInvoices: Invoice[] = [
+  {
+    id: 'gl-inv-2001',
+    invoiceNumber: 'GL-2001',
+    customerName: 'Willow Health',
+    customerId: 'gl-cust-01',
+    amount: 2600,
+    issueDate: daysAgo(60),
+    dueDate: daysAgo(30),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(60),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'gl-inv-2002',
+    invoiceNumber: 'GL-2002',
+    customerName: 'Cedar Manufacturing',
+    customerId: 'gl-cust-02',
+    amount: 3800,
+    issueDate: daysAgo(50),
+    dueDate: daysAgo(10),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(50),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'gl-inv-2003',
+    invoiceNumber: 'GL-2003',
+    customerName: 'Maple Systems',
+    customerId: 'gl-cust-03',
+    amount: 890,
+    issueDate: daysAgo(25),
+    dueDate: daysAgo(7),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(25),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'gl-inv-2004',
+    invoiceNumber: 'GL-2004',
+    customerName: 'Juniper Labs',
+    customerId: 'gl-cust-04',
+    amount: 1220,
+    issueDate: daysAgo(20),
+    dueDate: daysAgo(5),
+    status: 'paid',
+    paidDate: daysAgo(2),
+    createdAt: daysAgo(20),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'gl-inv-2005',
+    invoiceNumber: 'GL-2005',
+    customerName: 'Pinecrest Retail',
+    customerId: 'gl-cust-05',
+    amount: 3100,
+    issueDate: daysAgo(70),
+    dueDate: daysAgo(40),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(70),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'gl-inv-2006',
+    invoiceNumber: 'GL-2006',
+    customerName: 'Aspen Ventures',
+    customerId: 'gl-cust-06',
+    amount: 1750,
+    issueDate: daysAgo(18),
+    dueDate: daysFromNow(3),
+    status: 'due-soon',
+    paidDate: null,
+    createdAt: daysAgo(18),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'gl-inv-2007',
+    invoiceNumber: 'GL-2007',
+    customerName: 'Evergreen Bio',
+    customerId: 'gl-cust-07',
+    amount: 2280,
+    issueDate: daysAgo(35),
+    dueDate: daysAgo(12),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(35),
+    updatedAt: daysAgo(2),
+  },
+  {
+    id: 'gl-inv-2008',
+    invoiceNumber: 'GL-2008',
+    customerName: 'Spruce Analytics',
+    customerId: 'gl-cust-08',
+    amount: 1425,
+    issueDate: daysAgo(22),
+    dueDate: daysFromNow(5),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(22),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'gl-inv-2009',
+    invoiceNumber: 'GL-2009',
+    customerName: 'Clover Foods',
+    customerId: 'gl-cust-09',
+    amount: 4100,
+    issueDate: daysAgo(80),
+    dueDate: daysAgo(60),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(80),
+    updatedAt: daysAgo(0),
+  },
+  {
+    id: 'gl-inv-2010',
+    invoiceNumber: 'GL-2010',
+    customerName: 'Red Fern Media',
+    customerId: 'gl-cust-10',
+    amount: 960,
+    issueDate: daysAgo(12),
+    dueDate: daysFromNow(10),
+    status: 'draft',
+    paidDate: null,
+    createdAt: daysAgo(12),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'gl-inv-2011',
+    invoiceNumber: 'GL-2011',
+    customerName: 'Hawthorn Energy',
+    customerId: 'gl-cust-11',
+    amount: 1890,
+    issueDate: daysAgo(28),
+    dueDate: daysAgo(1),
+    status: 'overdue',
+    paidDate: null,
+    createdAt: daysAgo(28),
+    updatedAt: daysAgo(1),
+  },
+  {
+    id: 'gl-inv-2012',
+    invoiceNumber: 'GL-2012',
+    customerName: 'Birch Mobility',
+    customerId: 'gl-cust-12',
+    amount: 2550,
+    issueDate: daysAgo(16),
+    dueDate: daysFromNow(6),
+    status: 'sent',
+    paidDate: null,
+    createdAt: daysAgo(16),
+    updatedAt: daysAgo(1),
+  },
+]
