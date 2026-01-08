@@ -33,6 +33,7 @@ import {
   XCircle,
   Clock,
   MoreVertical,
+  FileText,
 } from 'lucide-react'
 
 type CommunicationListProps = {
