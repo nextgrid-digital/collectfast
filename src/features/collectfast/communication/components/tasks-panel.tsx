@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { type CommunicationTask } from '../utils/communication-tasks'
 import { type Task } from '@/features/tasks/data/schema'
 import { statuses, priorities } from '@/features/tasks/data/data'

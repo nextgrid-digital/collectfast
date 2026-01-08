@@ -10,17 +10,6 @@ type AmountStatusIndicatorProps = {
   className?: string
 }
 
-/**
- * Determine payment status based on amount and days (mock logic)
- * In real app, this would come from invoice data
- */
-function getPaymentStatus(amount: number, daysSinceSent: number): PaymentStatus {
-  // Mock logic - in real app, this would check invoice due date
-  if (daysSinceSent > 30) return 'overdue'
-  if (daysSinceSent > 15) return 'due-soon'
-  if (amount === 0) return 'paid'
-  return 'pending'
-}
 
 export function AmountStatusIndicator({
   amount,

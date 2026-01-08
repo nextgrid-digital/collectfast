@@ -42,7 +42,7 @@ export function EntityDetailPage({
   invoices,
   tasks,
   allCommunications,
-  companyId: _companyId,
+  companyId,
 }: EntityDetailPageProps) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('communications')

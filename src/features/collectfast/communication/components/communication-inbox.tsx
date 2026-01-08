@@ -15,10 +15,6 @@ import { getCommunicationMetadata } from '../utils/communication-metadata'
 import { cn } from '@/lib/utils'
 import {
   Mail,
-  MessageSquare,
-  Phone,
-  Bell,
-  FileText,
   CheckCircle2,
   Send,
   XCircle,
@@ -47,10 +43,8 @@ export function CommunicationInbox({
   onSearchChange,
   sortOption = 'newest',
   onSortChange,
-  companyId,
   selectedId,
   onSelect,
-  mode = 'communications',
   invoiceLookup = {},
 }: CommunicationInboxProps) {
   const allCommsForMetadata = allCommunications || communications
@@ -86,7 +80,7 @@ export function CommunicationInbox({
     }
   }
 
-  const getTypeIcon = (type: Communication['type']) => {
+  const getTypeIcon = (_type: Communication['type']) => {
     // Collectfast only deals with emails; always use the mail icon.
     return Mail
   }

@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LayoutGroup, Users, FileText, AlertTriangle } from 'lucide-react'
+import { Layers, Users, FileText, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type GroupingOption = 'urgency' | 'customer' | 'invoice'
@@ -21,7 +21,7 @@ export function GroupingToggle({
   onChange,
   className,
 }: GroupingToggleProps) {
-  const options: Array<{ value: GroupingOption; label: string; icon: typeof LayoutGroup }> = [
+  const options: Array<{ value: GroupingOption; label: string; icon: typeof Layers }> = [
     { value: 'urgency', label: 'By Urgency', icon: AlertTriangle },
     { value: 'customer', label: 'By Customer', icon: Users },
     { value: 'invoice', label: 'By Invoice', icon: FileText },

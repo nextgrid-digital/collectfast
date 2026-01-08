@@ -28,10 +28,6 @@ import { GroupingToggle, type GroupingOption } from './grouping-toggle'
 import {
   AlertCircle,
   Mail,
-  MessageSquare,
-  Phone,
-  Bell,
-  FileText,
   CheckCircle2,
   Send,
   XCircle,
@@ -231,7 +227,7 @@ export function CommunicationList({
   }
 
   // Get type icon
-  const getTypeIcon = (type: Communication['type']) => {
+  const getTypeIcon = (_type: Communication['type']) => {
     // Collectfast currently only sends emails; keep a single email icon.
     return { icon: Mail, color: 'text-blue-500' }
   }
@@ -261,20 +257,22 @@ export function CommunicationList({
         />
         <div className='flex items-center gap-2'>
           {onSortChange && (
-            <Select value={sortOption} onValueChange={onSortChange} className='flex-1'>
-              <SelectTrigger>
-                <SelectValue placeholder='Sort by...' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='urgency'>By Urgency</SelectItem>
-                <SelectItem value='newest'>Newest First</SelectItem>
-                <SelectItem value='oldest'>Oldest First</SelectItem>
-                <SelectItem value='customer'>By Customer</SelectItem>
-                <SelectItem value='amount'>By Amount Due</SelectItem>
-                <SelectItem value='status'>By Status</SelectItem>
-                <SelectItem value='type'>By Type</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className='flex-1'>
+              <Select value={sortOption} onValueChange={onSortChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder='Sort by...' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='urgency'>By Urgency</SelectItem>
+                  <SelectItem value='newest'>Newest First</SelectItem>
+                  <SelectItem value='oldest'>Oldest First</SelectItem>
+                  <SelectItem value='customer'>By Customer</SelectItem>
+                  <SelectItem value='amount'>By Amount Due</SelectItem>
+                  <SelectItem value='status'>By Status</SelectItem>
+                  <SelectItem value='type'>By Type</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           )}
           {onGroupingChange && (
             <GroupingToggle value={grouping} onChange={onGroupingChange} />
@@ -390,8 +388,8 @@ export function CommunicationList({
                       <div className='font-bold text-lg text-foreground flex-1 truncate'>{comm.customerName}</div>
                     </div>
                     <div className='flex items-center gap-2 shrink-0'>
-                      <StatusIcon className={cn('h-5 w-5', statusIcon.color)} title={comm.status} />
-                      <TypeIcon className={cn('h-5 w-5', typeIcon.color)} title={comm.type} />
+                      <StatusIcon className={cn('h-5 w-5', statusIcon.color)} />
+                      <TypeIcon className={cn('h-5 w-5', typeIcon.color)} />
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                           <Button variant='ghost' size='icon' className='h-7 w-7'>

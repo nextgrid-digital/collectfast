@@ -24,9 +24,9 @@ export function getCommunicationMetadata(
       comm.relatedInvoiceId !== null
   )
 
-  // Count reminders (type === 'reminder' and status !== 'failed')
+  // Count reminder emails (subject contains "reminder" and status !== 'failed')
   const reminders = relatedCommunications.filter(
-    (comm) => comm.type === 'reminder' && comm.status !== 'failed'
+    (comm) => comm.subject.toLowerCase().includes('reminder') && comm.status !== 'failed'
   )
 
   // Sort reminders by sentDate to determine sequence
@@ -121,7 +121,7 @@ function calculateFollowUpRequired(
  */
 function getFollowUpReason(
   communication: Communication,
-  relatedCommunications: Communication[]
+  _relatedCommunications: Communication[]
 ): string {
   const now = new Date()
   const daysSinceSent = Math.floor(

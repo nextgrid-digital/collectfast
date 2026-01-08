@@ -128,17 +128,17 @@ export function Communication() {
   }, [selectedCommunicationId, allCommunications])
 
   // Communication action handlers
-  const handleResend = (id: string) => {
+  const handleResend = (_id: string) => {
     toast.success('Communication resent successfully')
     // In real app, this would call an API
   }
 
-  const handleMarkAsRead = (id: string) => {
+  const handleMarkAsRead = (_id: string) => {
     toast.success('Communication marked as read')
     // In real app, this would update the communication status
   }
 
-  const handleScheduleFollowUp = (id: string) => {
+  const handleScheduleFollowUp = (_id: string) => {
     toast.success('Follow-up scheduled')
     // In real app, this would open a dialog to schedule
   }
@@ -148,7 +148,7 @@ export function Communication() {
     // In real app, this would create a task
   }
 
-  const handleAddNote = (content: string) => {
+  const handleAddNote = (_content: string) => {
     toast.success('Note added')
     // In real app, this would save the note
   }

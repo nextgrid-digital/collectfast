@@ -101,14 +101,10 @@ const getRelatedInvoices = (invoiceId: string | null) => {
 export function CommunicationDetail({
   communication,
   allCommunications = [],
-  onResend,
-  onMarkAsRead,
-  onScheduleFollowUp,
   onAddTask,
   onAddNote,
   onSelectCommunication,
   onBackToList,
-  onViewEntityContext,
   companyId,
 }: CommunicationDetailProps) {
   const [notes, setNotes] = useState<Note[]>([])
@@ -152,7 +148,7 @@ export function CommunicationDetail({
     const daysSinceDue = Math.floor((now.getTime() - invoice.dueDate.getTime()) / (1000 * 60 * 60 * 24))
     const daysSinceIssue = Math.floor((now.getTime() - invoice.issueDate.getTime()) / (1000 * 60 * 60 * 24))
     
-    let statusLabel = invoice.status
+    let statusLabel: string = invoice.status
     let statusColor = 'bg-gray-500/10 border-gray-500/20 text-gray-600 dark:text-gray-400'
     
     if (invoice.status === 'paid') {

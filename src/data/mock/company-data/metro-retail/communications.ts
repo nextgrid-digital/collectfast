@@ -1,12 +1,6 @@
 import { type Communication } from '@/features/collectfast/communication/data/schema'
 import { metroRetailInvoices } from './invoices'
 
-const daysAgo = (n: number) => {
-  const d = new Date()
-  d.setDate(d.getDate() - n)
-  return d
-}
-
 const addDays = (date: Date, days: number) => {
   const d = new Date(date)
   d.setDate(d.getDate() + days)

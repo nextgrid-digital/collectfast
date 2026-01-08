@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
-import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { format } from 'date-fns'
 import { Plus, Trash2, Edit2 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 
 export type Note = {
   id: string
@@ -25,7 +23,6 @@ type NotesSectionProps = {
 }
 
 export function NotesSection({
-  communicationId,
   notes = [],
   onAddNote,
   onDeleteNote,

@@ -5,10 +5,6 @@ import { type Communication } from '../data/schema'
 import { cn } from '@/lib/utils'
 import {
   Mail,
-  MessageSquare,
-  Phone,
-  Bell,
-  FileText,
   CheckCircle2,
   Send,
   XCircle,
@@ -31,7 +27,7 @@ export function CommunicationTimeline({
     (a, b) => b.sentDate.getTime() - a.sentDate.getTime()
   )
 
-  const getTypeIcon = (type: Communication['type']) => {
+  const getTypeIcon = (_type: Communication['type']) => {
     // Only email communications are used.
     return Mail
   }
@@ -75,7 +71,7 @@ export function CommunicationTimeline({
       <h3 className='text-lg font-bold'>Communication Timeline</h3>
       <ScrollArea className='h-[300px]'>
         <div className='space-y-3'>
-          {sortedCommunications.map((comm, index) => {
+          {sortedCommunications.map((comm) => {
             const isCurrent = comm.id === currentCommunicationId
             const TypeIcon = getTypeIcon(comm.type)
             const statusConfig = getStatusIcon(comm.status)
