@@ -205,10 +205,15 @@ export function Communication() {
         </div>
       </Header>
 
-      <Main className='flex flex-1 flex-col gap-6 overflow-hidden'>
+      <Main className='flex flex-1 flex-col gap-4 sm:gap-6 overflow-hidden'>
         {/* Header */}
-        <div className='flex items-center justify-between gap-4 flex-shrink-0'>
-          <h1 className='text-3xl font-bold tracking-tight'>Communication</h1>
+        <div className='flex flex-wrap items-end justify-between gap-2 flex-shrink-0'>
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight'>Communications</h2>
+            <p className='text-muted-foreground'>
+              View and manage all customer communications, reminders, and follow-ups.
+            </p>
+          </div>
           {!selectedCommunicationId && <CommunicationsPrimaryButtons />}
         </div>
 
